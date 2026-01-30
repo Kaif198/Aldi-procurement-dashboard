@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALDI Süd Holding - Procurement Performance Insights</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --aldi-navy: #001A4D;
+            --aldi-blue: #0091D9;
+            --aldi-orange: #FF6B35;
+            --aldi-yellow: #FFB81C;
+            --aldi-light-blue: #E8F4F8;
+            --aldi-gray: #6B7280;
+            --aldi-light-gray: #F3F4F6;
+            --success-green: #10B981;
+            --warning-red: #EF4444;
+            --shadow-sm: 0 2px 8px rgba(0, 26, 77, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 26, 77, 0.12);
+            --shadow-lg: 0 10px 30px rgba(0, 26, 77, 0.15);
+            --shadow-xl: 0 20px 40px rgba(0, 26, 77, 0.2);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #E8F4F8 0%, #F8FAFC 50%, #ffffff 100%);
+            background-attachment: fixed;
+            color: var(--aldi-navy);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(90deg, rgba(0, 145, 217, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 145, 217, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: backgroundSlide 20s linear infinite;
+        }
+
+        @keyframes backgroundSlide {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Glassmorphic Header */
+        .header {
+            background: rgba(0, 26, 77, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px 40px;
+            box-shadow: 0 8px 32px rgba(0, 26, 77, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 184, 28, 0.2);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--aldi-yellow);
+            box-shadow: 0 8px 20px rgba(255, 184, 28, 0.4);
+            transition: var(--transition);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 28px rgba(255, 184, 28, 0.6);
+        }
+
+        .header-text h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-text p {
+            color: var(--aldi-yellow);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: rgba(255, 184, 28, 0.2);
+            border: 1px solid var(--aldi-yellow);
+            color: var(--aldi-yellow);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            background: var(--aldi-yellow);
+            color: var(--aldi-navy);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 184, 28, 0.4);
+        }
+
+        .date-info {
+            color: white;
+            text-align: right;
+        }
+
+        .date-info .period {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            color: var(--aldi-yellow);
+        }
+
+        .date-info .updated {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            max-width: 1400px;
+            margin: 40px auto 30px;
+            padding: 0 20px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, var(--aldi-navy) 0%, #002B6B 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 184, 28, 0.1) 0%, transparent 70%);
+            animation: heroGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-20px, -20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--aldi-yellow);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .hero-stat {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 184, 28, 0.2);
+            transition: var(--transition);
+        }
+
+        .hero-stat:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            border-color: var(--aldi-yellow);
+        }
+
+        .hero-stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            color: var(--aldi-yellow);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .hero-stat-label {
+            font-size: 14px;
+            color: white;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* KPI Grid with Staggered Animation */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            border-left: 5px solid var(--aldi-blue);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: cardFadeIn 0.6s ease-out forwards;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(0, 145, 217, 0.03) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes cardFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .kpi-card:nth-child(1) { animation-delay: 0.1s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.2s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.3s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.4s; }
+        .kpi-card:nth-child(5) { animation-delay: 0.5s; }
+        .kpi-card:nth-child(6) { animation-delay: 0.6s; }
+        .kpi-card:nth-child(7) { animation-delay: 0.7s; }
+        .kpi-card:nth-child(8) { animation-delay: 0.8s; }
+
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .kpi-card.highlight {
+            border-left-color: var(--aldi-orange);
+            background: linear-gradient(135deg, #FFF9F0 0%, white 100%);
+        }
+
+        .kpi-card.warning {
+            border-left-color: var(--warning-red);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .kpi-label {
+            font-size: 13px;
+            color: var(--aldi-gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex: 1;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: linear-gradient(135deg, var(--aldi-blue) 0%, #0070A8 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 145, 217, 0.3);
+        }
+
+        .kpi-card.highlight .kpi-icon {
+            background: linear-gradient(135deg, var(--aldi-orange) 0%, #E85A28 100%);
+        }
+
+        .kpi-value {
+            font-size: 42px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            color: var(--aldi-navy);
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .kpi-change {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .kpi-change.positive {
+            color: var(--success-green);
+        }
+
+        .kpi-change.negative {
+            color: var(--warning-red);
+        }
+
+        .kpi-change i {
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* Progress Ring */
+        .progress-ring {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 1s ease;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, var(--aldi-yellow) 0%, var(--aldi-orange) 100%);
+            border-image-slice: 1;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            color: var(--aldi-navy);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--aldi-blue);
+            font-size: 28px;
+        }
+
+        .section-filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--aldi-light-gray);
+            background: white;
+            color: var(--aldi-gray);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--aldi-blue);
+            color: white;
+            border-color: var(--aldi-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Chart Section */
+        .chart-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, var(--aldi-blue), var(--aldi-orange), var(--aldi-yellow));
+            border-radius: 16px;
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .chart-card:hover::before {
+            opacity: 0.2;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            color: var(--aldi-navy);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-title i {
+            color: var(--aldi-blue);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+        }
+
+        /* Alert Boxes */
+        .alert-section {
+            margin-bottom: 30px;
+        }
+
+        .alert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .alert-box {
+            padding: 20px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            box-shadow: var(--shadow-sm);
+            animation: slideInRight 0.6s ease-out;
+            border-left: 4px solid;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-box.success {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            border-color: var(--success-green);
+        }
+
+        .alert-box.warning {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-color: var(--aldi-yellow);
+        }
+
+        .alert-box.danger {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            border-color: var(--warning-red);
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .alert-box.success .alert-icon {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .alert-box.warning .alert-icon {
+            background: var(--aldi-yellow);
+            color: var(--aldi-navy);
+        }
+
+        .alert-box.danger .alert-icon {
+            background: var(--warning-red);
+            color: white;
+        }
+
+        .alert-content h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--aldi-navy);
+            margin-bottom: 5px;
+        }
+
+        .alert-content p {
+            font-size: 14px;
+            color: var(--aldi-gray);
+            line-height: 1.5;
+        }
+
+        /* Supplier Table */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 40px 12px 45px;
+            border: 2px solid var(--aldi-light-gray);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--aldi-blue);
+            box-shadow: 0 0 0 3px rgba(0, 145, 217, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--aldi-gray);
+        }
+
+        .supplier-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .supplier-table thead {
+            background: linear-gradient(135deg, var(--aldi-navy) 0%, #002B6B 100%);
+        }
+
+        .supplier-table th {
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .supplier-table td {
+            padding: 16px 15px;
+            border-bottom: 1px solid var(--aldi-light-gray);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .supplier-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .supplier-table tbody tr:hover {
+            background: linear-gradient(90deg, var(--aldi-light-blue) 0%, white 100%);
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0, 145, 217, 0.1);
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge i {
+            font-size: 10px;
+        }
+
+        .status-excellent {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            color: #065F46;
+        }
+
+        .status-good {
+            background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+            color: #1E40AF;
+        }
+
+        .status-needs-improvement {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            color: #991B1B;
+        }
+
+        /* Insights Section */
+        .insights-section {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .insight-item {
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--aldi-blue);
+            background: linear-gradient(135deg, var(--aldi-light-gray) 0%, white 100%);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 145, 217, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .insight-item:hover::before {
+            opacity: 1;
+        }
+
+        .insight-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--aldi-orange);
+        }
+
+        .insight-item h4 {
+            color: var(--aldi-navy);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .insight-item p {
+            color: var(--aldi-gray);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--aldi-gray);
+            font-size: 12px;
+            background: white;
+            border-top: 1px solid var(--aldi-light-gray);
+            margin-top: 60px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .footer strong {
+            color: var(--aldi-navy);
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--aldi-blue) 0%, #0070A8 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 8px 24px rgba(0, 145, 217, 0.4);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 999;
+            animation: fabBounce 3s ease-in-out infinite;
+        }
+
+        @keyframes fabBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 32px rgba(0, 145, 217, 0.6);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--aldi-light-gray);
+            border-top: 4px solid var(--aldi-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-actions {
+                display: none;
+            }
+
+            .hero-card {
+                padding: 25px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-filters {
+                flex-wrap: wrap;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .supplier-table {
+                font-size: 12px;
+            }
+
+            .supplier-table th,
+            .supplier-table td {
+                padding: 10px 8px;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fab {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .header,
+            .fab,
+            .action-btn,
+            .filter-btn,
+            .search-box {
+                display: none;
+            }
+
+            .chart-card,
+            .kpi-card,
+            .table-container,
+            .insights-section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Glassmorphic Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img class="logo" src="data:image/avif;base64,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" alt="ALDI Süd Logo">
+                <div class="header-text">
+                    <h1>ALDI SÜD HOLDING</h1>
+                    <p>Procurement Performance Insights Dashboard</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button class="action-btn" onclick="window.print()">
+                    <i class="fas fa-download"></i> Export PDF
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+            </div>
+
+            <div class="date-info">
+                <div class="period">FY 2024-2025</div>
+                <div class="updated">Last Updated: January 30, 2026</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-card">
+            <div class="hero-content">
+                <h2 class="hero-title">Procurement Excellence Dashboard</h2>
+                <p class="hero-subtitle">Real-time insights driving €287M in annual cost savings</p>
+                
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-target="8.7">0</div>
+                        <div class="hero-stat-label">Billion € Procurement Spend</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-target="1847">0</div>
+                        <div class="hero-stat-label">Active Global Suppliers</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-target="94.2">0</div>
+                        <div class="hero-stat-label">% On-Time Delivery Rate</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-target="287">0</div>
+                        <div class="hero-stat-label">Million € Cost Savings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Required Alerts -->
+    <div class="container">
+        <div class="alert-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Action Required
+                </h2>
+            </div>
+            
+            <div class="alert-grid">
+                <div class="alert-box danger">
+                    <div class="alert-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h4>Cycle Time Above Target</h4>
+                        <p>Procurement cycle time is 7.2 hours vs. target of 5.0 hours. Recommend implementing RPA automation.</p>
+                    </div>
+                </div>
+                
+                <div class="alert-box warning">
+                    <div class="alert-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h4>Contract Coverage Opportunity</h4>
+                        <p>27.6% of spend not under contract. €58M additional savings potential identified.</p>
+                    </div>
+                </div>
+                
+                <div class="alert-box success">
+                    <div class="alert-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h4>Sustainability On Track</h4>
+                        <p>89% supplier compliance achieved. On target for 100% by Q4 2025.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards with Icons -->
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Key Performance Indicators
+            </h2>
+            <div class="section-filters">
+                <button class="filter-btn active">YTD</button>
+                <button class="filter-btn">QoQ</button>
+                <button class="filter-btn">MoM</button>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card highlight">
+                <div class="kpi-header">
+                    <div class="kpi-label">Total Procurement Spend</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-euro-sign"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="8.7">0</div>
+                <div class="kpi-change positive">
+                    <i class="fas fa-arrow-up"></i> 12.5% YoY
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-label">Supplier On-Time Delivery</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="94.2">0%</div>
+                <div class="kpi-change positive">
+                    <i class="fas fa-arrow-up"></i> 2.8% vs Target
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-label">Cost Savings Achieved</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="287">€0M</div>
+                <div class="kpi-change positive">
+                    <i class="fas fa-arrow-up"></i> 18.3% YoY
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-label">Spend Under Contract</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="72.4">0%</div>
+                <div class="kpi-change positive">
+                    <i class="fas fa-arrow-up"></i> 4.2% QoQ
+                </div>
+            </div>
+
+            <div class="kpi-card warning">
+                <div class="kpi-header">
+                    <div class="kpi-label">Procurement Cycle Time</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="7.2">0 hrs</div>
+                <div class="kpi-change negative">
+                    <i class="fas fa-arrow-down"></i> 0.8 hrs vs Target
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-label">Active Suppliers</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="1847">0</div>
+                <div class="kpi-change negative">
+                    <i class="fas fa-arrow-down"></i> 3.4% YoY
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-label">Supplier Quality Score</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="4.6">0/5.0</div>
+                <div class="kpi-change positive">
+                    <i class="fas fa-arrow-up"></i> 0.3 pts YoY
+                </div>
+            </div>
+
+            <div class="kpi-card highlight">
+                <div class="kpi-header">
+                    <div class="kpi-label">Sustainable Suppliers</div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" data-count="89">0%</div>
+                <div class="kpi-change positive">
+                    <i class="fas fa-arrow-up"></i> 11% YoY
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-chart-pie"></i>
+                Performance Analytics
+            </h2>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    Procurement Spend by Category
+                </h3>
+                <div class="chart-container">
+                    <canvas id="spendByCategoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-line"></i>
+                    Supplier Performance Trends
+                </h3>
+                <div class="chart-container">
+                    <canvas id="supplierPerformanceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card full-width">
+                <h3 class="chart-title">
+                    <i class="fas fa-money-bill-trend-up"></i>
+                    Monthly Cost Savings & Spend Analysis
+                </h3>
+                <div class="chart-container">
+                    <canvas id="monthlySavingsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-globe"></i>
+                    Procurement by Region
+                </h3>
+                <div class="chart-container">
+                    <canvas id="regionalChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-calendar-check"></i>
+                    Payment Terms Distribution
+                </h3>
+                <div class="chart-container">
+                    <canvas id="paymentTermsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supplier Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3 class="section-title">
+                    <i class="fas fa-building"></i>
+                    Top 10 Suppliers Performance Dashboard
+                </h3>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="supplierSearch" placeholder="Search suppliers...">
+                </div>
+            </div>
+            
+            <table class="supplier-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Supplier Name</th>
+                        <th>Category</th>
+                        <th>Annual Spend (€M)</th>
+                        <th>On-Time Delivery</th>
+                        <th>Quality Score</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Fresh Produce GmbH</td>
+                        <td>Fresh Produce</td>
+                        <td><strong>€485</strong></td>
+                        <td>97.2%</td>
+                        <td>4.8/5.0</td>
+                        <td><span class="status-badge status-excellent"><i class="fas fa-check-circle"></i> Excellent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Dairy Collective EU</td>
+                        <td>Dairy Products</td>
+                        <td><strong>€423</strong></td>
+                        <td>95.8%</td>
+                        <td>4.7/5.0</td>
+                        <td><span class="status-badge status-excellent"><i class="fas fa-check-circle"></i> Excellent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Bakery Partners International</td>
+                        <td>Bakery</td>
+                        <td><strong>€378</strong></td>
+                        <td>94.3%</td>
+                        <td>4.6/5.0</td>
+                        <td><span class="status-badge status-good"><i class="fas fa-thumbs-up"></i> Good</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Meat Processing Ltd</td>
+                        <td>Meat & Poultry</td>
+                        <td><strong>€356</strong></td>
+                        <td>93.1%</td>
+                        <td>4.5/5.0</td>
+                        <td><span class="status-badge status-good"><i class="fas fa-thumbs-up"></i> Good</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>PackTech Solutions</td>
+                        <td>Packaging</td>
+                        <td><strong>€298</strong></td>
+                        <td>96.4%</td>
+                        <td>4.7/5.0</td>
+                        <td><span class="status-badge status-excellent"><i class="fas fa-check-circle"></i> Excellent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td>Frozen Foods Europe</td>
+                        <td>Frozen Products</td>
+                        <td><strong>€267</strong></td>
+                        <td>92.8%</td>
+                        <td>4.4/5.0</td>
+                        <td><span class="status-badge status-good"><i class="fas fa-thumbs-up"></i> Good</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>7</strong></td>
+                        <td>Beverage Distributors AG</td>
+                        <td>Beverages</td>
+                        <td><strong>€234</strong></td>
+                        <td>94.7%</td>
+                        <td>4.6/5.0</td>
+                        <td><span class="status-badge status-good"><i class="fas fa-thumbs-up"></i> Good</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>8</strong></td>
+                        <td>Household Essentials Co.</td>
+                        <td>Non-Food</td>
+                        <td><strong>€198</strong></td>
+                        <td>89.2%</td>
+                        <td>4.2/5.0</td>
+                        <td><span class="status-badge status-needs-improvement"><i class="fas fa-exclamation-circle"></i> Needs Improvement</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>9</strong></td>
+                        <td>Logistics Services Group</td>
+                        <td>Logistics</td>
+                        <td><strong>€187</strong></td>
+                        <td>91.5%</td>
+                        <td>4.3/5.0</td>
+                        <td><span class="status-badge status-good"><i class="fas fa-thumbs-up"></i> Good</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>10</strong></td>
+                        <td>Tech Infrastructure Partners</td>
+                        <td>IT Services</td>
+                        <td><strong>€156</strong></td>
+                        <td>95.1%</td>
+                        <td>4.7/5.0</td>
+                        <td><span class="status-badge status-excellent"><i class="fas fa-check-circle"></i> Excellent</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Strategic Insights -->
+        <div class="insights-section">
+            <h3 class="section-title">
+                <i class="fas fa-lightbulb"></i>
+                Strategic Procurement Insights
+            </h3>
+            <div class="insights-grid">
+                <div class="insight-item">
+                    <h4>🎯 Supplier Consolidation Impact</h4>
+                    <p>Reduced supplier base by 3.4% YoY while maintaining quality standards. This consolidation resulted in €42M additional cost savings through volume leverage and streamlined operations.</p>
+                </div>
+                <div class="insight-item">
+                    <h4>♻️ Sustainability Progress</h4>
+                    <p>89% of suppliers now meet ALDI's sustainability standards, up from 78% last year. All key suppliers committed to eliminating deforestation by end of 2025, aligning with corporate goals.</p>
+                </div>
+                <div class="insight-item">
+                    <h4>🚀 Digital Transformation</h4>
+                    <p>Implemented One Network Intelligent Control Tower for global shipping visibility. Real-time collaboration with 1,847 suppliers has reduced procurement cycle time by 15% quarter-over-quarter.</p>
+                </div>
+                <div class="insight-item">
+                    <h4>📊 Spend Under Management</h4>
+                    <p>Achieved 72.4% spend under contract, approaching world-class benchmark of 75%. Focus areas: Non-food items and regional logistics services for further contract coverage improvement.</p>
+                </div>
+                <div class="insight-item">
+                    <h4>🌍 Regional Optimization</h4>
+                    <p>European suppliers account for 68% of total spend, with increasing focus on local sourcing to reduce transportation costs and carbon footprint. Asian sourcing optimized for non-food categories.</p>
+                </div>
+                <div class="insight-item">
+                    <h4>⚡ Efficiency Gains</h4>
+                    <p>JIT inventory system integration with top suppliers reduced warehousing costs by €18M annually. EDI automation achieved 97% invoice accuracy, significantly reducing manual interventions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>© 2026 ALDI SÜD HOLDING</strong> | Procurement Performance Dashboard | Confidential - Internal Use Only</p>
+        <p>Dashboard created by: <strong>Mohammed Kaif Ahmed</strong> | MSc Strategy Management | kaifahmed6864@gmail.com</p>
+    </footer>
+
+    <!-- Floating Action Button -->
+    <div class="fab" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Smooth scroll to top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Count-up animation for numbers
+        function animateValue(element, start, end, duration, suffix = '') {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    element.textContent = end + suffix;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = current.toFixed(1) + suffix;
+                }
+            }, 16);
+        }
+
+        // Initialize count-up animations
+        window.addEventListener('load', () => {
+            // Hero stats
+            document.querySelectorAll('.hero-stat-value').forEach(el => {
+                const target = parseFloat(el.dataset.target);
+                animateValue(el, 0, target, 2000);
+            });
+
+            // KPI cards
+            setTimeout(() => {
+                document.querySelectorAll('.kpi-value[data-count]').forEach(el => {
+                    const target = parseFloat(el.dataset.count);
+                    const suffix = el.textContent.replace(/[0-9.]/g, '');
+                    animateValue(el, 0, target, 1500, suffix);
+                });
+            }, 500);
+        });
+
+        // Search functionality for supplier table
+        document.getElementById('supplierSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.supplier-table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Filter button functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Chart.js Configuration
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0, 26, 77, 0.95)';
+        Chart.defaults.plugins.tooltip.padding = 12;
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
+
+        const colors = {
+            navy: '#001A4D',
+            blue: '#0091D9',
+            orange: '#FF6B35',
+            yellow: '#FFB81C',
+            green: '#10B981',
+            red: '#EF4444',
+            gray: '#6B7280'
+        };
+
+        // 1. Spend by Category Chart
+        const spendByCategoryCtx = document.getElementById('spendByCategoryChart').getContext('2d');
+        new Chart(spendByCategoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Fresh Produce', 'Dairy Products', 'Bakery', 'Meat & Poultry', 'Packaging', 'Frozen Products', 'Beverages', 'Non-Food', 'Logistics', 'IT Services'],
+                datasets: [{
+                    data: [485, 423, 378, 356, 298, 267, 234, 198, 187, 156],
+                    backgroundColor: [
+                        colors.blue, colors.orange, colors.yellow, colors.green,
+                        colors.navy, '#FF9F40', '#4BC0C0', '#9966FF', '#FF6384', '#36A2EB'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 15,
+                            padding: 12,
+                            font: { size: 12, weight: '600' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: €${value}M (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+
+        // 2. Supplier Performance Trends
+        const supplierPerformanceCtx = document.getElementById('supplierPerformanceChart').getContext('2d');
+        new Chart(supplierPerformanceCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'On-Time Delivery %',
+                    data: [91.2, 92.1, 92.8, 93.5, 93.2, 93.8, 94.1, 94.5, 94.2, 94.8, 94.6, 94.2],
+                    borderColor: colors.blue,
+                    backgroundColor: createGradient(supplierPerformanceCtx, colors.blue),
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 2
+                }, {
+                    label: 'Quality Score',
+                    data: [4.3, 4.35, 4.38, 4.42, 4.45, 4.48, 4.52, 4.55, 4.58, 4.60, 4.58, 4.6],
+                    borderColor: colors.orange,
+                    backgroundColor: createGradient(supplierPerformanceCtx, colors.orange),
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 2,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'On-Time Delivery %', font: { weight: '600' } },
+                        min: 90,
+                        max: 100,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Quality Score (out of 5)', font: { weight: '600' } },
+                        min: 4,
+                        max: 5,
+                        grid: { drawOnChartArea: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: true, position: 'top', labels: { font: { size: 12, weight: '600' } } }
+                },
+                animation: { duration: 2000, easing: 'easeInOutQuart' }
+            }
+        });
+
+        // 3. Monthly Cost Savings
+        const monthlySavingsCtx = document.getElementById('monthlySavingsChart').getContext('2d');
+        new Chart(monthlySavingsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Monthly Spend (€M)',
+                    data: [712, 698, 745, 723, 756, 734, 768, 742, 781, 765, 798, 785],
+                    backgroundColor: colors.navy,
+                    borderRadius: 8,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Cost Savings (€M)',
+                    data: [18, 21, 24, 22, 26, 23, 28, 25, 29, 27, 32, 30],
+                    backgroundColor: colors.orange,
+                    borderRadius: 8,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Savings Rate %',
+                    data: [2.5, 3.0, 3.2, 3.0, 3.4, 3.1, 3.6, 3.4, 3.7, 3.5, 4.0, 3.8],
+                    type: 'line',
+                    borderColor: colors.green,
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3,
+                    yAxisID: 'y1',
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Amount (€M)', font: { weight: '600' } },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Savings Rate %', font: { weight: '600' } },
+                        grid: { drawOnChartArea: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: true, position: 'top', labels: { font: { size: 12, weight: '600' } } }
+                },
+                animation: { duration: 2000, easing: 'easeInOutQuart' }
+            }
+        });
+
+        // 4. Regional Distribution
+        const regionalCtx = document.getElementById('regionalChart').getContext('2d');
+        new Chart(regionalCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Germany', 'UK', 'Austria', 'Switzerland', 'Italy', 'France', 'China', 'USA', 'Australia', 'Others'],
+                datasets: [{
+                    label: 'Procurement Spend (€M)',
+                    data: [2340, 1456, 987, 756, 542, 678, 823, 945, 678, 495],
+                    backgroundColor: [
+                        colors.navy, colors.blue, colors.orange, colors.yellow,
+                        colors.green, '#FF9F40', '#4BC0C0', '#9966FF', '#FF6384', colors.gray
+                    ],
+                    borderRadius: 8,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Spend (€M)', font: { weight: '600' } },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart',
+                    delay: (context) => context.dataIndex * 100
+                }
+            }
+        });
+
+        // 5. Payment Terms Distribution
+        const paymentTermsCtx = document.getElementById('paymentTermsChart').getContext('2d');
+        new Chart(paymentTermsCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Net 30 Days', 'Net 45 Days', 'Net 60 Days', 'Net 90 Days', 'Immediate', 'Custom Terms'],
+                datasets: [{
+                    data: [42, 28, 18, 8, 2, 2],
+                    backgroundColor: [
+                        colors.blue, colors.orange, colors.yellow, 
+                        colors.green, colors.navy, colors.gray
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 15,
+                            padding: 12,
+                            font: { size: 12, weight: '600' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                return `${label}: ${value}%`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+
+        // Helper function to create gradient fills
+        function createGradient(ctx, color) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, color + '40');
+            gradient.addColorStop(1, color + '00');
+            return gradient;
+        }
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Show/hide FAB based on scroll position
+        window.addEventListener('scroll', () => {
+            const fab = document.querySelector('.fab');
+            if (window.scrollY > 300) {
+                fab.style.display = 'flex';
+            } else {
+                fab.style.display = 'none';
+            }
+        });
+
+        console.log('ALDI Süd Procurement Dashboard Enhanced - Loaded Successfully ✓');
+    </script>
+</body>
+</html>
